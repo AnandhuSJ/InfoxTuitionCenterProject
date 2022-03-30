@@ -2,7 +2,7 @@
 
 <div class="row ">
     <div class="col-12 grid-margin">
-        <h2> <small class="text-muted">Update Class </small></h2>
+        <h2> <small class="text-muted">Update Batch </small></h2>
     </div>
 </div>
 
@@ -11,7 +11,7 @@
         <div class="card" style="height: 350px;">
             <div class="card-body">
 
-                <form method="post" action="#" enctype="multipart/form-data"> {% csrf_token %}
+                <form method="post" action="{% url 'AcademicAddBatch_Adminsave' %}" enctype="multipart/form-data"> {% csrf_token %}
 
                     <div class="form-group row">
                         <label for="exampleInputUsernam2" class="col-sm-3 col-form-label">
@@ -20,27 +20,19 @@
                         <div class="col-sm-9">
                             <select class="form-control" id="batch" style="color:white;" name="batch" required>
                              <option selected="true" disabled="disabled" value="">-Not Selected-</option>
-                            
-                            <option value="">{{i.batch_name}}Morning</option>
-                        
+                             {% for i in Batc %}
+                            <option value="{{i.id}}">{{i.batch_name}}</option>
+                            {% endfor %}
                           </select>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="exampleInputUsernam2" class="col-sm-3 col-form-label">
-                        Class Name
-                    </label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="exampleInputUsername2" name="class" style="color:inherit;">
 
-                        </div>
-                    </div>
                     <div class="form-group row">
                         <label for="exampleInputUsernam2" class="col-sm-3 col-form-label">
                         Description
                     </label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" name="discrip" id="exampleTextarea1" style="color:white;" rows="8">On going Section</textarea>
+                            <textarea class="form-control" name="discrip" id="exampleTextarea1" style="color:white;" rows="8"></textarea>
 
                         </div>
                         <br>

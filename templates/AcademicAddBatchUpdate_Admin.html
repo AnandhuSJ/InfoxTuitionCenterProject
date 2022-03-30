@@ -10,8 +10,9 @@
     <div class="col-md-7 grid-margin stretch-card">
         <div class="card" style="height: 350px;">
             <div class="card-body">
+                {% for i in var %}
+                <form method="post" action="{% url 'AcademicAddBatchUpdate_Adminsave' i.id %}" enctype="multipart/form-data"> {% csrf_token %} {%endfor%}
 
-                <form method="post" action="#" enctype="multipart/form-data"> {% csrf_token %}
 
                     <div class="form-group row">
                         <label for="exampleInputUsernam2" class="col-sm-3 col-form-label">
@@ -19,10 +20,9 @@
                         </label>
                         <div class="col-sm-9">
                             <select class="form-control" id="batch" style="color:white;" name="batch" required>
-                             <option selected="true" disabled="disabled" value="">-Not Selected-</option>
-                            
-                            <option value="">{{i.batch_name}}Morning</option>
-                        
+                             <option selected="true" disabled="disabled" value="">{{var1.batch_name}}</option>
+                             {% for i in batc %}
+                            <option value="{{i.batch_name}}">{{i.batch_name}}</option>{%endfor%}
                           </select>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                         Description
                     </label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" name="discrip" id="exampleTextarea1" style="color:white;" rows="8"></textarea>
+                            <textarea class="form-control" name="discrip" id="exampleTextarea1" style="color:white;" rows="8">{{var1.description}}</textarea>
 
                         </div>
                         <br>

@@ -13,7 +13,7 @@
                 <div class="table-responsive">
                     <table class="table" id="myTable">
                         <thead>
-                            <tr class="header">
+                            <tr class="header" data-href="#">
                                 <th></th>
                                 <th> Name </th>
                                 <th> Email </th>
@@ -25,24 +25,24 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for i in SCurrentstaff %}
+                            <tr data-href="{% url 'StaffCurrentstaffProfile_Admin' i.id %}">
 
-                            <tr data-href="{% url 'StaffCurrentstaffProfile_Admin' %}">
-
-                                <td></td>
+                                <td>{{forloop.counter}}</td>
                                 <td>
-                                    <img src="" alt="image" />
+                                    <img src="{{ i.photo.url }}" alt="image" />
                                     <!-- <span class="ps-2">{{ pro.fullname }}</span> -->
-                                    <span class="ps-2">Anandhu SJ</span>
+                                    <span class="ps-2">{{ i.fullname }}</span>
                                 </td>
                                 <td>
-                                    anandhusj048@gmail.com
+                                    {{ i.email }}
                                 </td>
                                 <!-- <td> {{ pro.joiningdate|date:"d-m-Y" }} </td> -->
-                                <td> 23-03-22 </td>
-                                <td> INFO2131231 </td>
+                                <td> {{i.joiningdate|date:"d-m-Y"}} </td>
+                                <td> {{ i.employee_id }} </td>
 
                             </tr>
-
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

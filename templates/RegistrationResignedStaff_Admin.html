@@ -48,18 +48,13 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <!-- <th>
-                                    <div class="form-check form-check-muted m-0">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input">
-                                        </label>
-                                    </div>
-                                </th> -->
+
                                 <th> Sl.No </th>
                                 <th> Name </th>
                                 <th> Email </th>
                                 <th> Contact Number </th>
                                 <th> Batch </th>
+                                <th> Class </th>
                                 <th> Status </th>
                                 <!-- <th> Date of Appointment </th> -->
                                 <!-- <th> Employee Id </th> -->
@@ -69,45 +64,50 @@
                             </tr>
                         </thead>
                         <tbody id="myTable">
-
+                            {% for i in RStaff %}
                             <tr>
                                 <form method="post" action='' enctype="multipart/form-data">
+                                    {%csrf_token%}
+                                    <input type="hidden" name="id" value="{{i.id}}">
+                                    <td>
+                                        {{forloop.counter}}
+                                    </td>
+                                    <td>
+                                        <img src="{{ i.photo.url }}" alt="image" />
+                                        <span class="ps-2">{{ i.fullname }}</span>
+                                    </td>
+                                    <td>{{ i.email }}</td>
+                                    <td>{{ i.mobile }}</td>
 
-                                    <input type="hidden" name="id" value="">
                                     <td>
+                                        {{ i.batch }}
                                     </td>
-                                    <td>
-                                        <img src="" alt="image" />
-                                        <span class="ps-2"></span>
-                                    </td>
-                                    <td>gaga@gmail.com</td>
-                                    <td>901341091</td>
-                                    <td>
 
-                                    </td>
-                                    <td></td>
+                                    <td>{{ i.class_registration }}</td>
+
+                                    <td>{{ i.status }}</td>
                                     <td class="text-primary">
-                                        <a href="" data-toggle="modal" data-target="#payment" style="text-decoration: none;">
+                                        <a href="" data-toggle="modal" data-target="#payment{{i.id}}" style="text-decoration: none;">
                                             <div class="badge badge-outline-primary">Payment</div>
                                         </a>
                                     </td>
 
 
                                     <td>
-                                        <a href="">
+                                        <a href="{% url 'RegistrationResignedStaffAdmin_update' i.id %}">
                                             <div class="badge badge-outline-warning">Update</div>
                                         </a>
                                     </td>
 
                                     <td>
-                                        <a id="alert2" href="">
+                                        <a id="alert2" href="{% url 'RegistrationResignedStaffAdmin_delete'%}">
                                             <div class="badge badge-outline-danger">Delete</div>
                                         </a>
 
                                     </td>
                                 </form>
                             </tr>
-
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -115,8 +115,8 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="payment">
+{% for i in RStaff %}
+<div class="modal fade" id="payment{{i.id}}">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content modal-xl" style="background-color: #191c24;">
             <div class="modal-header">
@@ -139,19 +139,22 @@
 
                     <tbody>
 
+                        {% for m in payment1 %}{% if i.id == m.user_id %}
                         <tr>
-                            <td style="color:white;">Praveen</td>
-                            <td style="color:white;">20000</td>
-                            <td style="color:white;">23-03-22</td>
-                            <td style="color:white;">SBI100213919321</td>
+                            <td style="color:white;">{{ m.user }}</td>
+                            <td style="color:white;">{{ m.account_no }}</td>
+                            <td style="color:white;">{{ m.payment_date }}</td>
+                            <td style="color:white;">{{ m.payment_amount }}</td>
 
                         </tr>
+                        {% endif %} {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+{% endfor %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
