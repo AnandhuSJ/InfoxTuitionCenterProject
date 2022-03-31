@@ -7,6 +7,7 @@ from app.models import *
 from datetime import datetime,date
 from django.shortcuts import render
 from django.conf import settings
+from django. contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User,auth
 from django.contrib.auth.hashers import check_password, make_password
@@ -100,7 +101,7 @@ def RegistrationCurrentStaff_Admin(request):
        CStaff = user_registration.objects.filter(designation_id = des).filter(status='active' or 'Active').all().order_by('-id')
        batc = batch.objects.all()
        class_reg = class_registration.objects.all()
-       payment = payment_details.objects.all().filter
+       payment = payment_details.objects.all()
        return render(request, 'RegistrationCurrentStaff_Admin.html',{'mem':mem,'des':des,'CStaff':CStaff,'batc':batc,'class_reg':class_reg,'payment':payment})  
 
 def RegistrationCurrentStaff_Adminsave(request,id):
@@ -255,7 +256,8 @@ def RegistrationCurrentStudent_Admin(request):
         CStudent = user_registration.objects.filter(designation_id = des).filter(status='active' or 'Active').all().order_by('-id')
         batc2 = batch.objects.all()
         class_reg2 = class_registration.objects.all()
-        return render(request, 'RegistrationCurrentStudent_Admin.html',{'mem':mem,'des':des,'CStudent':CStudent,'batc2':batc2,'class_reg2':class_reg2})     
+        payment = payment_details.objects.all()
+        return render(request, 'RegistrationCurrentStudent_Admin.html',{'mem':mem,'des':des,'CStudent':CStudent,'batc2':batc2,'class_reg2':class_reg2,'payment':payment})     
 
 def RegistrationCurrentStudent_Adminsave(request,id):
     
@@ -271,6 +273,59 @@ def RegistrationCurrentStudent_Adminsave(request,id):
      
        return redirect('RegistrationCurrentStudent_Admin')
 
+def RegistrationCurrentStudentAdmin_update(request,id):
+    if 'SAdm_id' in request.session:
+        if request.session.has_key('SAdm_id'):
+            SAdm_id = request.session['SAdm_id']
+        else:
+            return redirect('/') 
+        SAdm = user_registration.objects.filter(id=SAdm_id)
+        
+        mem1 = user_registration.objects.get(id=id)
+        pay = payment_details.objects.filter(user_id=id)
+        bac = batch.objects.all()
+        clss = class_registration.objects.all()
+        
+        return render(request,'RegistrationCurrentStudentAdmin_update.html',{'pay':pay,'mem1':mem1,'clss':clss,'bac':bac,'SAdm':SAdm})
+    else:
+        return redirect('/')
+
+
+def RegistrationCurrentStudent_updatessave(request,id):
+    if 'SAdm_id' in request.session:
+        if request.session.has_key('SAdm_id'):
+            SAdm_id = request.session['SAdm_id']
+        else:
+            return redirect('/') 
+        SAdm = user_registration.objects.filter(id=SAdm_id) 
+    a = user_registration.objects.get(id=id)
+    b = payment_details.objects.get(user_id=id)
+    if request.method == 'POST':
+       a.fullname = request.POST['name']
+       a.email = request.POST['email']
+       a.mobile = request.POST['mobile']
+       a.status = request.POST['status']
+       a.student_id  =  request.POST['studentid']
+       a.joiningdate =  request.POST['joiningdate'] 
+       BatchId = request.POST['batch'] 
+       a.batch_id = BatchId 
+       ClassId = request.POST['class'] 
+       a.class_registration_id = ClassId
+       a.save()
+              
+       b.payment_amount = request.POST['payment']
+       b.save()       
+
+    return redirect('RegistrationCurrentStudent_Admin')
+
+
+def RegistrationCurrentStudentAdmin_delete(request,id):
+    
+    
+    m =   user_registration.objects.get(id = id)
+    m.delete()
+    return redirect('RegistrationCurrentStudent_Admin')
+
 
 def RegistrationPreviousstudent_Admin(request):
        if 'SAdm_id' in request.session:
@@ -283,8 +338,60 @@ def RegistrationPreviousstudent_Admin(request):
        PStudent = user_registration.objects.filter(designation_id = des).filter(status='graduated' or 'Graduated').all().order_by('-id')
        batc3 = batch.objects.all()
        class_reg3 = class_registration.objects.all()
-       return render(request, 'RegistrationPreviousstudent_Admin.html',{'mem':mem,'des':des,'PStudent':PStudent,'batc3':batc3,'class_reg3':class_reg3})                              
+       payment = payment_details.objects.all()
+       return render(request, 'RegistrationPreviousstudent_Admin.html',{'mem':mem,'des':des,'PStudent':PStudent,'batc3':batc3,'class_reg3':class_reg3,'payment':payment})                              
 
+def RegistrationPreviousstudentAdmin_update(request,id):
+    if 'SAdm_id' in request.session:
+        if request.session.has_key('SAdm_id'):
+            SAdm_id = request.session['SAdm_id']
+        else:
+            return redirect('/') 
+        SAdm = user_registration.objects.filter(id=SAdm_id)
+        
+        mem1 = user_registration.objects.get(id=id)
+        pay = payment_details.objects.filter(user_id=id)
+        bac = batch.objects.all()
+        clss = class_registration.objects.all()
+        
+        return render(request,'RegistrationPreviousstudentAdmin_update.html',{'pay':pay,'mem1':mem1,'clss':clss,'bac':bac,'SAdm':SAdm})
+    else:
+        return redirect('/')
+
+
+def RegistrationPreviousstudentAdmin_updatessave(request,id):
+    if 'SAdm_id' in request.session:
+        if request.session.has_key('SAdm_id'):
+            SAdm_id = request.session['SAdm_id']
+        else:
+            return redirect('/') 
+        SAdm = user_registration.objects.filter(id=SAdm_id) 
+    a = user_registration.objects.get(id=id)
+    b = payment_details.objects.get(user_id=id)
+    if request.method == 'POST':
+       a.fullname = request.POST['name']
+       a.email = request.POST['email']
+       a.mobile = request.POST['mobile']
+       a.status = request.POST['status']
+       a.student_id  =  request.POST['studentid']
+       BatchId = request.POST['batch'] 
+       a.batch_id = BatchId 
+       ClassId = request.POST['class'] 
+       a.class_registration_id = ClassId
+       a.save()
+              
+       b.payment_amount = request.POST['payment']
+       b.save()       
+
+    return redirect('RegistrationPreviousstudent_Admin')
+
+
+def RegistrationPreviousstudentAdmin_delete(request,id):
+    
+    
+    m =   user_registration.objects.get(id = id)
+    m.delete()
+    return redirect('RegistrationPreviousstudent_Admin')
 
 
 def Staff_Admin(request):
@@ -326,7 +433,13 @@ def StaffCurrentstaffProfile_Admin(request,id):
             return redirect('/')
        mem = user_registration.objects.filter(id=SAdm_id)
        CStaffProfile = user_registration.objects.get(id = id)
-       return render(request, 'StaffCurrentstaffProfile_Admin.html',{'mem':mem,'CStaffProfile':CStaffProfile}) 
+       labels = []
+       data = []
+       queryset = user_registration.objects.filter(id=id)
+       for i in queryset:
+            labels=[i.workperformance,i.attitude,i.creativity]
+            data=[i.workperformance,i.attitude,i.creativity]
+       return render(request, 'StaffCurrentstaffProfile_Admin.html',{'mem':mem,'CStaffProfile':CStaffProfile,'labels':labels,'data':data}) 
 
 def StaffPreviousstaffProfile_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -334,10 +447,15 @@ def StaffPreviousstaffProfile_Admin(request,id):
              SAdm_id = request.session['SAdm_id']
        else:
             return redirect('/')
-       mem = user_registration.objects.filter(id=SAdm_id)
-       
+       mem = user_registration.objects.filter(id=SAdm_id)   
        PStaffProfile = user_registration.objects.get(id = id)
-       return render(request, 'StaffPreviousstaffProfile_Admin.html',{'mem':mem,'PStaffProfile':PStaffProfile}) 
+       labels = []
+       data = []
+       queryset = user_registration.objects.filter(id=id)
+       for i in queryset:
+            labels=[i.workperformance,i.attitude,i.creativity]
+            data=[i.workperformance,i.attitude,i.creativity]
+       return render(request, 'StaffPreviousstaffProfile_Admin.html',{'mem':mem,'PStaffProfile':PStaffProfile,'labels':labels,'data':data}) 
 
 def StaffCurrentstaffAttendance_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -361,7 +479,36 @@ def StaffCurrentstaffAttendanceSort_Admin(request,id):
             fromdate = request.POST.get('from')
             todate = request.POST.get('to') 
             mem1 = attendance.objects.filter(date__range=[fromdate, todate]).filter(user_id = id)
-       return render(request,'StaffCurrentstaffAttendanceSort_Admin.html',{'mem':mem,'mem1':mem1,'id':id})            
+       return render(request,'StaffCurrentstaffAttendanceSort_Admin.html',{'mem':mem,'mem1':mem1,'id':id}) 
+
+def StaffCurrentstaffPerformance_Admin(request,id):
+       if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+       else:
+            return redirect('/')
+       mem = user_registration.objects.filter(id=SAdm_id)
+       var = user_registration.objects.get(id=id)
+       return render(request,'StaffCurrentstaffPerformance_Admin.html',{'mem':mem,'var':var})
+
+
+
+def StaffCurrentstaffPerformance_Adminsave(request,id):
+     if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+     else:
+            return redirect('/')          
+     mem = user_registration.objects.filter(id=SAdm_id)           
+     if request.method == "POST":
+            var = user_registration.objects.get(id=id)
+            var.creativity = request.POST.get('create')
+            var.workperformance = request.POST.get('work')
+            var.attitude = request.POST.get('attitu')
+            var.save()
+            m1 ="Datas added Successfully"
+            return render(request,'StaffCurrentstaffPerformance_Admin.html',{'m1':m1,'mem':mem,'var':var})
+
 
 def StaffPreviousstaffAttendance_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -386,6 +533,35 @@ def StaffPreviousstaffAttendanceSort_Admin(request,id):
             todate = request.POST.get('to') 
             mem1 = attendance.objects.filter(date__range=[fromdate, todate]).filter(user_id = id)
        return render(request,'StaffPreviousstaffAttendanceSort_Admin.html',{'mem':mem,'mem1':mem1,'id':id})
+
+def StaffPreviousstaffPerformance_Admin(request,id):
+       if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+       else:
+            return redirect('/')
+       mem = user_registration.objects.filter(id=SAdm_id)
+       var = user_registration.objects.get(id=id)
+       return render(request,'StaffPreviousstaffPerformance_Admin.html',{'mem':mem,'var':var})
+
+
+
+def StaffPreviousstaffPerformance_Adminsave(request,id):
+     if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+     else:
+            return redirect('/')          
+     mem = user_registration.objects.filter(id=SAdm_id)           
+     if request.method == "POST":
+            var = user_registration.objects.get(id=id)
+            var.creativity = request.POST.get('create')
+            var.workperformance = request.POST.get('work')
+            var.attitude = request.POST.get('attitu')
+            var.save()
+            m2 ="Datas added Successfully"
+            return render(request,'StaffPreviousstaffPerformance_Admin.html',{'m2':m2,'mem':mem,'var':var})  
+
 
 
 def Student_Admin(request):
@@ -427,7 +603,13 @@ def StudentCurrentstudentProfile_Admin(request,id):
             return redirect('/')
        mem = user_registration.objects.filter(id=SAdm_id)
        CStudentProfile = user_registration.objects.get(id = id)
-       return render(request, 'StudentCurrentstudentProfile_Admin.html',{'mem':mem,'CStudentProfile':CStudentProfile})
+       labels = []
+       data = []
+       queryset = user_registration.objects.filter(id=id)
+       for i in queryset:
+            labels=[i.workperformance,i.attitude,i.creativity]
+            data=[i.workperformance,i.attitude,i.creativity]
+       return render(request, 'StudentCurrentstudentProfile_Admin.html',{'mem':mem,'CStudentProfile':CStudentProfile,'labels':labels,'data':data})
 
 def StudentPreviousstudentProfile_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -437,7 +619,13 @@ def StudentPreviousstudentProfile_Admin(request,id):
             return redirect('/')
        mem = user_registration.objects.filter(id=SAdm_id)
        PStudentProfile = user_registration.objects.get(id = id)
-       return render(request, 'StudentPreviousstudentProfile_Admin.html',{'mem':mem,'PStudentProfile':PStudentProfile})
+       labels = []
+       data = []
+       queryset = user_registration.objects.filter(id=id)
+       for i in queryset:
+            labels=[i.workperformance,i.attitude,i.creativity]
+            data=[i.workperformance,i.attitude,i.creativity]
+       return render(request, 'StudentPreviousstudentProfile_Admin.html',{'mem':mem,'PStudentProfile':PStudentProfile,'labels':labels,'data':data})
 
 def StudentCurrentstudentAttendance_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -463,6 +651,35 @@ def StudentCurrentstudentAttendanceSort_Admin(request,id):
             mem1 = attendance.objects.filter(date__range=[fromdate, todate]).filter(user_id = id)
        return render(request,'StudentCurrentstudentAttendanceSort_Admin.html',{'mem':mem,'mem1':mem1,'id':id})
 
+def StudentCurrentstudentPerformance_Admin(request,id):
+       if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+       else:
+            return redirect('/')
+       mem = user_registration.objects.filter(id=SAdm_id)
+       var = user_registration.objects.get(id=id)
+       return render(request,'StudentCurrentstudentPerformance_Admin.html',{'mem':mem,'var':var})
+
+
+
+def StudentCurrentstudentPerformance_Adminsave(request,id):
+     if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+     else:
+            return redirect('/')          
+     mem = user_registration.objects.filter(id=SAdm_id)           
+     if request.method == "POST":
+            var = user_registration.objects.get(id=id)
+            var.creativity = request.POST.get('create')
+            var.workperformance = request.POST.get('work')
+            var.attitude = request.POST.get('attitu')
+            var.save()
+            m3 ="Datas added Successfully"
+            return render(request,'StudentCurrentstudentPerformance_Admin.html',{'m3':m3,'mem':mem,'var':var})
+
+
 def StudentPreviousstudentAttendance_Admin(request,id):
        if 'SAdm_id' in request.session:
             if request.session.has_key('SAdm_id'):
@@ -487,7 +704,33 @@ def StudentPreviousstudentAttendanceSort_Admin(request,id):
             mem1 = attendance.objects.filter(date__range=[fromdate, todate]).filter(user_id = id)
        return render(request,'StudentPreviousstudentAttendanceSort_Admin.html',{'mem':mem,'mem1':mem1,'id':id})        
 
+def StudentPreviousstudentPerformance_Admin(request,id):
+       if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+       else:
+            return redirect('/')
+       mem = user_registration.objects.filter(id=SAdm_id)
+       var = user_registration.objects.get(id=id)
+       return render(request,'StudentPreviousstudentPerformance_Admin.html',{'mem':mem,'var':var})
 
+
+
+def StudentPreviousstudentPerformance_Adminsave(request,id):
+     if 'SAdm_id' in request.session:
+            if request.session.has_key('SAdm_id'):
+             SAdm_id = request.session['SAdm_id']
+     else:
+            return redirect('/')          
+     mem = user_registration.objects.filter(id=SAdm_id)           
+     if request.method == "POST":
+            var = user_registration.objects.get(id=id)
+            var.creativity = request.POST.get('create')
+            var.workperformance = request.POST.get('work')
+            var.attitude = request.POST.get('attitu')
+            var.save()
+            m4 ="Datas added Successfully"
+            return render(request,'StudentPreviousstudentPerformance_Admin.html',{'m4':m4,'mem':mem,'var':var})
 
 def Academic_Admin(request):
        if 'SAdm_id' in request.session:
@@ -519,19 +762,23 @@ def AcademicAddBatch_Admin(request):
 
 
 def AcademicAddBatch_Adminsave(request):
-       if 'SAdm_id' in request.session:
+     if 'SAdm_id' in request.session:
             if request.session.has_key('SAdm_id'):
              SAdm_id = request.session['SAdm_id']
-       else:
+     else:
             return redirect('/')
-       mem = user_registration.objects.filter(id=SAdm_id)
-       if request.method == 'POST':
-              desc = request.POST['discrip']
-       ba = request.POST['batch']
-       a=batch(description=desc,batch_name=ba)
-       a.save()
-       m="Batch added Successfully"
-       return render(request, 'AcademicAddBatch_Admin.html',{'m':m,'mem':mem}) 
+     mem = user_registration.objects.filter(id=SAdm_id)
+     if request.method == 'POST':
+        desc = request.POST['discrip']
+        ba = request.POST['batch']
+        if batch.objects.filter(batch_name=ba):
+          messages.success(request, "Batch Already Exist")
+          return redirect('AcademicAddBatch_Admin')
+        else:
+         a=batch(description=desc,batch_name=ba)
+         a.save()
+         m="Batch added Successfully"
+     return render(request, 'AcademicAddBatch_Admin.html',{'m':m,'mem':mem}) 
 
 def AcademicAddBatchUpdate_Admin(request,id):
        if 'SAdm_id' in request.session:
@@ -570,7 +817,7 @@ def AcademicViewBatch_Admin(request):
        mem = user_registration.objects.filter(id=SAdm_id)
 
        batc = batch.objects.all()
-       clss = class_registration.objects.all()
+       clss = class_registration.objects.values('batch_name_id').distinct()
        return render(request, 'AcademicViewBatch_Admin.html',{'mem':mem,'batc':batc,'clss':clss})
 
 def AcademicAddBatch_Admindelete(request,id):

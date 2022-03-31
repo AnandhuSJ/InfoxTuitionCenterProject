@@ -2,7 +2,7 @@
 
 <div class="row ">
     <div class="col-12 grid-margin">
-        <h2> <small class="text-muted">Update Batch </small></h2>
+        <h2> <small class="text-muted">Add Batch </small></h2>
     </div>
 </div>
 
@@ -18,12 +18,7 @@
                             Batch
                         </label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="batch" style="color:white;" name="batch" required>
-                             <option selected="true" disabled="disabled" value="">-Not Selected-</option>
-                             {% for i in Batc %}
-                            <option value="{{i.id}}">{{i.batch_name}}</option>
-                            {% endfor %}
-                          </select>
+                            <input type="text" class="form-control" id="exampleInputUsername2" name="batch" style="color:inherit;" autocomplete="off">
                         </div>
                     </div>
 
@@ -39,7 +34,7 @@
                         <br>
 
                     </div>
-                    <center> {{m}}</center>
+                    <center>{{m}}</center>
 
                     <div>
                         <center>
